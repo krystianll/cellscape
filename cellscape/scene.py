@@ -3,7 +3,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
-from matplotlib import lines, text, cm
+from matplotlib import lines, text, colormaps
 from matplotlib.colors import LinearSegmentedColormap, ListedColormap
 from scipy import interpolate
 import os
@@ -192,7 +192,7 @@ def make_scene(args):
     if args.recolor:
         # default cmap is hsv. for discrete could try Set1 or Pastel1
         if len(args.recolor_cmap) == 1:
-            cmap = cm.get_cmap(args.recolor_cmap[0])
+            cmap = colormaps[args.recolor_cmap[0]]
         else:
             # TESTING interpret as continous color scheme
             # cmap = LinearSegmentedColormap.from_list("cmap", args.recolor_cmap)
@@ -244,7 +244,7 @@ def make_scene(args):
                     # use color scheme from recolor_cmap
                     facecolor = color_scheme[o['name']]
                     edgecolor = 'black'
-                if "shade" in p:
+                if p.get("shade") is not None:
                     # TODO export shading_range from polygons as well
                     facecolor = shade_from_color(facecolor, p["shade"], range=p.get("shading_range", 0.4)) # using default from cartoon.py, could change
             else:
@@ -275,7 +275,7 @@ def make_scene(args):
         background_w=0
         for i, o in enumerate(background_object_list):
             for p in o["polygons"]:
-                plot_polygon(p["polygon"], offset=[background_w, 0], scale=scaling_factor, zorder_mod=p.get("zorder", -2), facecolor=p["facecolor"], edgecolor=p["edgecolor"], linewidth=p["linewidth"]*scaling_factor)
+                plot_polygon(p["polygon"], translate_pre=[background_w, 0], scale=scaling_factor, zorder_mod=p.get("zorder", -2), facecolor=p["facecolor"], edgecolor=p["edgecolor"], linewidth=p["linewidth"]*scaling_factor)
             background_w += (o['width']+args.padding)
 
     plt.savefig(args.save, transparent=True, pad_inches=0, bbox_inches='tight', dpi=args.dpi)

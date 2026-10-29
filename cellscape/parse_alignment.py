@@ -1,4 +1,3 @@
-from Bio import pairwise2
 from Bio.PDB import *
 from Bio.Align import substitution_matrices, PairwiseAligner
 import numpy as np
@@ -26,6 +25,8 @@ def overlap_from_alignment(a):
 
 def align_pair(s1, s2):
     # wrapper for biopython pairwise alignment
+    # imported here since Bio.pairwise2 is deprecated and only needed by this function
+    from Bio import pairwise2
     blosum62 = substitution_matrices.load("BLOSUM62")
     return pairwise2.align.localds(s1, s2, blosum62, -3, -3, one_alignment_only=True)[0]
 
